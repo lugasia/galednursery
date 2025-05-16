@@ -19,7 +19,6 @@ import axios from 'axios';
 
 const HomePage = () => {
   const [plants, setPlants] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -64,7 +63,6 @@ const HomePage = () => {
             count: categoryCounts[category._id] ? categoryCounts[category._id].count : 0
           }));
         
-        setCategories(categoriesWithPlants);
         setCategoriesWithCount(categoriesWithPlants);
         
         setLoading(false);
