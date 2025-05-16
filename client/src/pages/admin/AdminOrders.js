@@ -25,11 +25,7 @@ import {
   Divider,
   List,
   ListItem,
-  ListItemText,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem
+  ListItemText
 } from '@mui/material';
 import {
   Visibility as ViewIcon,

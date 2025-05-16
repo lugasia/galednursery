@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Layout from '../../components/layout/Layout';
+import { useCart } from '../../context/CartContext';
 import { 
   Box, 
   Typography, 
@@ -11,9 +13,7 @@ import {
   IconButton, 
   Divider, 
   TextField,
-  Card,
   CardMedia,
-  Alert,
   Stepper,
   Step,
   StepLabel,
@@ -31,8 +31,6 @@ import {
   ShoppingCart as CartIcon,
   WhatsApp as WhatsAppIcon
 } from '@mui/icons-material';
-import Layout from '../../components/layout/Layout';
-import { useCart } from '../../context/CartContext';
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -82,11 +80,6 @@ const CartPage = () => {
   
   const handleQuantityChange = (plantId, newQuantity) => {
     updateQuantity(plantId, newQuantity);
-  };
-  
-  // No need to calculate total as everything is free
-  const calculateTotal = () => {
-    return 0;
   };
   
   const formatWhatsAppMessage = () => {

@@ -5,8 +5,6 @@ import {
   Container, 
   Grid, 
   CircularProgress,
-  Tabs,
-  Tab,
   Paper,
   InputBase,
   IconButton,

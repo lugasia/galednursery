@@ -6,7 +6,6 @@ import {
   Paper, 
   Card, 
   CardContent, 
-  CardHeader,
   Divider,
   List,
   ListItem,
@@ -17,7 +16,6 @@ import {
 import { 
   LocalFlorist as PlantIcon, 
   Category as CategoryIcon, 
-  ShoppingCart as OrderIcon, 
   Inventory as InventoryIcon 
 } from '@mui/icons-material';
 import axios from 'axios';
