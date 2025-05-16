@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: plant-nursery-api
+    env: node
+    buildCommand: npm install && npm run install-server
+    startCommand: npm run start-server
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: PORT
+        value: 10000
+      - key: CLIENT_URL
+        value: https://plant-nursery-app.onrender.com
+
+  - type: web
+    name: plant-nursery-app
+    env: static
+    buildCommand: npm install && npm run install-client && npm run build-client
+    staticPublishPath: ./client/build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://plant-nursery-api.onrender.com
