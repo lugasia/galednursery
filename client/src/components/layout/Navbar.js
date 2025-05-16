@@ -24,7 +24,7 @@ import {
   Close as CloseIcon
 } from '@mui/icons-material';
 import { useCart } from '../../context/CartContext';
-import axios from 'axios';
+import api from '../../utils/api';
 
 const Navbar = () => {
   const { totalItems } = useCart();
@@ -37,7 +37,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get('/api/categories');
+        const res = await api.get('/api/categories');
         setCategories(res.data);
       } catch (err) {
         console.error('Error fetching categories:', err);

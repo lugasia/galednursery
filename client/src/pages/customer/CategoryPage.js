@@ -18,7 +18,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import Layout from '../../components/layout/Layout';
 import PlantCard from '../../components/customer/PlantCard';
-import axios from 'axios';
+import api from '../../utils/api';
 
 const CategoryPage = () => {
   const { id } = useParams();
@@ -36,11 +36,11 @@ const CategoryPage = () => {
         setLoading(true);
         
         // Fetch category details
-        const categoryRes = await axios.get(`/api/categories/${id}`);
+        const categoryRes = await api.get(`/api/categories?id=${id}`);
         setCategory(categoryRes.data);
         
         // Fetch plants in this category
-        const plantsRes = await axios.get(`/api/categories/${id}/plants`);
+        const plantsRes = await api.get(`/api/plants?category=${id}`);
         
         // Filter out plants with no stock
         const plantsWithStock = plantsRes.data.filter(plant => plant.stock > 0);

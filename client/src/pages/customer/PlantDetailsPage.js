@@ -27,7 +27,7 @@ import {
 } from '@mui/icons-material';
 import Layout from '../../components/layout/Layout';
 import { useCart } from '../../context/CartContext';
-import axios from 'axios';
+import api from '../../utils/api';
 
 const PlantDetailsPage = () => {
   const { id } = useParams();
@@ -44,12 +44,12 @@ const PlantDetailsPage = () => {
     const fetchPlant = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`/api/plants/${id}`);
+        const res = await api.get(`/api/plants?id=${id}`);
         setPlant(res.data);
         
         // Fetch related plants from the same category
         if (res.data.category) {
-          const relatedRes = await axios.get(`/api/categories/${res.data.category._id}/plants`);
+          const relatedRes = await api.get(`/api/plants?category=${res.data.category._id}`);
           // Filter out the current plant, only include plants with stock, and limit to 4 plants
           const filtered = relatedRes.data
             .filter(p => p._id !== id && p.stock > 0)

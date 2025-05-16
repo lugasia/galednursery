@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../utils/api';
 import Layout from '../../components/layout/Layout';
 import { useCart } from '../../context/CartContext';
 import { 
@@ -109,7 +109,7 @@ const CartPage = () => {
       };
       
       // Send order to the backend
-      const response = await axios.post('/api/orders', orderData);
+      const response = await api.post('/api/orders', orderData);
       
       // Save the order number from the response
       if (response.data && response.data.orderNumber) {

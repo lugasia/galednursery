@@ -15,7 +15,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import Layout from '../../components/layout/Layout';
 import PlantCard from '../../components/customer/PlantCard';
-import axios from 'axios';
+import api from '../../utils/api';
 
 const HomePage = () => {
   const [plants, setPlants] = useState([]);
@@ -31,10 +31,10 @@ const HomePage = () => {
         setLoading(true);
         
         // Fetch categories
-        const categoriesRes = await axios.get('/api/categories');
+        const categoriesRes = await api.get('/api/categories');
         
         // Fetch plants
-        const plantsRes = await axios.get('/api/plants');
+        const plantsRes = await api.get('/api/plants');
         
         // Filter out plants with no stock
         const plantsWithStock = plantsRes.data.filter(plant => plant.stock > 0);
