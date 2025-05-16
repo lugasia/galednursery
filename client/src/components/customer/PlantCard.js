@@ -10,6 +10,7 @@ import {
   WbSunny as SunIcon,
   Height as HeightIcon
 } from '@mui/icons-material';
+import { Box, Typography, Button } from '@mui/material';
 
 const PlantCard = ({ plant }) => {
   const navigate = useNavigate();
