@@ -6,9 +6,17 @@
     "install-server": "cd server && npm install",
     "build-client": "cd client && npm run build",
     "start-server": "cd server && npm start",
-    "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm start\""
+    "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm start\"",
+    "build": "npm run install-client && npm run install-server && npm run build-client",
+    "start": "cd server && npm start"
   },
   "devDependencies": {
     "concurrently": "^8.0.1"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3"
+  },
+  "engines": {
+    "node": ">=18.x"
   }
 }

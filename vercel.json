@@ -1,8 +1,16 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/client/$1" }
+  "version": 2,
+  "builds": [
+    { "src": "client/package.json", "use": "@vercel/static-build", "config": { "distDir": "build" } },
+    { "src": "api/index.js", "use": "@vercel/node" }
   ],
-  "buildCommand": "cd client && npm install && npm run build",
-  "outputDirectory": "client/build",
-  "installCommand": "cd client && npm install"
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/index.js" },
+    { "src": "/(.*)", "dest": "/client/$1" }
+  ],
+  "env": {
+    "MONGODB_URI": "mongodb+srv://amir:UwZ3SotJuiqUpZ7J@cluster0.iqbyvcl.mongodb.net/galednursery?retryWrites=true&w=majority&appName=Cluster0",
+    "JWT_SECRET": "kibbutz_gilad_nursery_secret_key_2025",
+    "NODE_ENV": "production"
+  }
 }
