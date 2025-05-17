@@ -1,21 +1,6 @@
 {
-  "version": 2,
-  "buildCommand": "npm run build",
-  "framework": "create-react-app",
-  "outputDirectory": "client/build",
-  "builds": [
-    { "src": "server/index.js", "use": "@vercel/node" },
-    { "src": "client/package.json", "use": "@vercel/static-build", "config": { "distDir": "build" } }
-  ],
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/server/index.js" },
-    { "source": "/(.*)", "destination": "/client/build/index.html" }
-  ],
-  "env": {
-    "NODE_ENV": "production",
-    "MONGODB_URI": "mongodb+srv://amir:UwZ3SotJuiqUpZ7J@cluster0.iqbyvcl.mongodb.net/galednursery?retryWrites=true&w=majority&appName=Cluster0",
-    "JWT_SECRET": "kibbutz_gilad_nursery_secret_key_2025",
-    "CLIENT_URL": "https://galednursery.vercel.app",
-    "REACT_APP_API_URL": "/api"
-  }
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/(.*)", "destination": "/" }
+  ]
 }
