@@ -7,7 +7,7 @@ const path = require('path');
 
 // Import routes
 const plantRoutes = require('./plants');
-const categoryRoutes = require('./categories');
+const categoryRoutes = require('./categories2');
 // Removed orders and auth routes
 
 // Create Express app
