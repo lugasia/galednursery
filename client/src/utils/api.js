@@ -11,15 +11,8 @@ const getBaseUrl = () => {
   return 'http://localhost:5001/api';
 };
 
-// Helper function to handle API responses and ensure they're in the expected format
-const handleApiResponse = (response) => {
-  // If the response is empty or not what we expect, return an empty array
-  if (!response || !response.data) {
-    console.warn('API response is empty or invalid', response);
-    return { data: [] };
-  }
-  return response;
-};
+// הערה: הסרנו את הפונקציה handleApiResponse כי היא לא בשימוש
+// והיא גורמת לשגיאת ESLint בזמן הבנייה
 
 const api = axios.create({
   baseURL: getBaseUrl(),
