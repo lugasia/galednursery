@@ -2,7 +2,7 @@ services:
   - type: web
     name: plant-nursery-api
     env: node
-    buildCommand: npm install && npm run install-server
+    buildCommand: npm install && cd server && npm install
     startCommand: npm run start-server
     envVars:
       - key: NODE_ENV
