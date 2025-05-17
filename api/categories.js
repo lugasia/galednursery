@@ -1,17 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const Category = require('../server/models/Category');
-const Plant = require('../server/models/Plant');
-const auth = require('../server/middleware/auth');
+const Category = require('./models/Category');
+const Plant = require('./models/Plant');
+const auth = require('./middleware/auth');
 
 // Get all categories (public)
 router.get('/', async (req, res) => {
   try {
+    console.log('Fetching categories...');
     const categories = await Category.find({ isActive: true }).sort({ name: 1 });
+    console.log(`Found ${categories.length} categories`);
     res.json(categories);
   } catch (err) {
     console.error('Error fetching categories:', err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ 
+      message: 'Error fetching categories',
+      error: err.message 
+    });
   }
 });
 
@@ -27,7 +32,10 @@ router.get('/:id', async (req, res) => {
     res.json(category);
   } catch (err) {
     console.error('Error fetching category:', err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ 
+      message: 'Error fetching category',
+      error: err.message 
+    });
   }
 });
 
@@ -42,7 +50,10 @@ router.get('/:id/plants', async (req, res) => {
     res.json(plants);
   } catch (err) {
     console.error('Error fetching plants by category:', err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ 
+      message: 'Error fetching plants by category',
+      error: err.message 
+    });
   }
 });
 

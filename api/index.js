@@ -15,25 +15,37 @@ const authRoutes = require('./auth');
 const app = express();
 
 // Middleware
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({ 
+  origin: true, 
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Connect to MongoDB
 let isConnected = false;
 const connectToDatabase = async () => {
-  if (isConnected) return;
+  if (isConnected) {
+    console.log('Using existing database connection');
+    return;
+  }
   
   try {
+    console.log('Connecting to MongoDB...');
     const mongoUri = process.env.MONGODB_URI;
     if (!mongoUri) {
       throw new Error('MONGODB_URI environment variable is not set');
     }
-    await mongoose.connect(mongoUri);
+    await mongoose.connect(mongoUri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
     isConnected = true;
-    console.log('Connected to MongoDB');
+    console.log('Connected to MongoDB successfully');
   } catch (err) {
-    console.error('Could not connect to MongoDB', err);
+    console.error('Could not connect to MongoDB:', err);
     throw err;
   }
 };

@@ -4,5 +4,8 @@
   "outputDirectory": "client/build",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api" }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }
