@@ -36,8 +36,15 @@ const HomePage = () => {
         // Fetch plants
         const plantsRes = await api.get('/api/plants');
         
+        // Ensure we have an array of plants
+        if (!plantsRes.data || !Array.isArray(plantsRes.data)) {
+          console.error('Plants data is not an array:', plantsRes.data);
+          setPlants([]);
+          return;
+        }
+        
         // Filter out plants with no stock
-        const plantsWithStock = plantsRes.data.filter(plant => plant.stock > 0);
+        const plantsWithStock = plantsRes.data.filter(plant => plant && plant.stock > 0);
         setPlants(plantsWithStock);
         
         // Calculate plant count per category

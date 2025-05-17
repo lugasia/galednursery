@@ -11,6 +11,16 @@ const getBaseUrl = () => {
   return 'http://localhost:5001/api';
 };
 
+// Helper function to handle API responses and ensure they're in the expected format
+const handleApiResponse = (response) => {
+  // If the response is empty or not what we expect, return an empty array
+  if (!response || !response.data) {
+    console.warn('API response is empty or invalid', response);
+    return { data: [] };
+  }
+  return response;
+};
+
 const api = axios.create({
   baseURL: getBaseUrl(),
   headers: {
@@ -30,6 +40,23 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add a response interceptor to handle errors and ensure consistent data format
+api.interceptors.response.use(
+  (response) => {
+    // For successful responses, ensure data is in expected format
+    if (!response.data) {
+      console.warn('API response has no data property');
+      response.data = [];
+    }
+    return response;
+  },
+  (error) => {
+    // For error responses, provide a consistent error format
+    console.error('API Error:', error);
     return Promise.reject(error);
   }
 );

@@ -38,9 +38,16 @@ const Navbar = () => {
     const fetchCategories = async () => {
       try {
         const res = await api.get('/api/categories');
-        setCategories(res.data);
+        // Ensure we have an array of categories
+        if (res.data && Array.isArray(res.data)) {
+          setCategories(res.data);
+        } else {
+          console.error('Categories data is not an array:', res.data);
+          setCategories([]); // Set empty array as fallback
+        }
       } catch (err) {
         console.error('Error fetching categories:', err);
+        setCategories([]); // Set empty array on error
       }
     };
     
