@@ -15,7 +15,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import Layout from '../../components/layout/Layout';
 import PlantCard from '../../components/customer/PlantCard';
-import api from '../../utils/api';
+import { fetchDataFromGitHub } from '../../utils/api';
 
 const HomePage = () => {
   const [plants, setPlants] = useState([]);
@@ -30,23 +30,18 @@ const HomePage = () => {
       try {
         setLoading(true);
         
-        // Fetch categories
-        const categoriesRes = await api.get('/api/categories');
+        // Fetch all data from GitHub
+        const data = await fetchDataFromGitHub();
         
-        // Fetch plants
-        console.log('Fetching plants from:', api.defaults.baseURL + '/api/plants');
-        const plantsRes = await api.get('/api/plants');
-        console.log('Plants response:', plantsRes);
-        
-        // Ensure we have an array of plants
-        if (!plantsRes.data || !Array.isArray(plantsRes.data)) {
-          console.error('Plants data is not an array:', plantsRes.data);
-          setPlants([]);
+        if (!data || !data.plants || !Array.isArray(data.plants) || !data.categories || !Array.isArray(data.categories)) {
+          console.error('Data is not in expected format:', data);
+          setError('פורמט הנתונים שגוי');
+          setLoading(false);
           return;
         }
         
         // Filter out plants with no stock
-        const plantsWithStock = plantsRes.data.filter(plant => plant && plant.stock > 0);
+        const plantsWithStock = data.plants.filter(plant => plant && plant.stock > 0);
         setPlants(plantsWithStock);
         
         // Calculate plant count per category
@@ -65,7 +60,7 @@ const HomePage = () => {
         });
         
         // Filter categories with at least one plant
-        const categoriesWithPlants = categoriesRes.data
+        const categoriesWithPlants = data.categories
           .filter(category => categoryCounts[category._id] && categoryCounts[category._id].count > 0)
           .map(category => ({
             ...category,

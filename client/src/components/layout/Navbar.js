@@ -24,7 +24,7 @@ import {
   Close as CloseIcon
 } from '@mui/icons-material';
 import { useCart } from '../../context/CartContext';
-import api from '../../utils/api';
+import { fetchDataFromGitHub } from '../../utils/api';
 
 const Navbar = () => {
   const { totalItems } = useCart();
@@ -37,19 +37,16 @@ const Navbar = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        console.log('Fetching categories from:', api.defaults.baseURL + '/api/categories');
-        const res = await api.get('/api/categories');
-        console.log('Categories response:', res);
-        // Ensure we have an array of categories
-        if (res.data && Array.isArray(res.data)) {
-          setCategories(res.data);
+        const data = await fetchDataFromGitHub();
+        if (data && data.categories && Array.isArray(data.categories)) {
+          setCategories(data.categories);
         } else {
-          console.error('Categories data is not an array:', res.data);
-          setCategories([]); // Set empty array as fallback
+          console.error('Categories data is not in expected format:', data);
+          setCategories([]);
         }
       } catch (err) {
         console.error('Error fetching categories:', err);
-        setCategories([]); // Set empty array on error
+        setCategories([]);
       }
     };
     

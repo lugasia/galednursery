@@ -1,9 +1,23 @@
 import axios from 'axios';
 
-// Determine the API base URL based on the current environment
+// GitHub raw content URL for data.json
+const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/lugasia/galednursery/main/data.json';
+
+// Function to fetch data from GitHub
+export const fetchDataFromGitHub = async () => {
+  try {
+    const response = await axios.get(GITHUB_RAW_URL);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data from GitHub:', error);
+    throw error;
+  }
+};
+
+// Keep the existing API configuration for other endpoints
 const getBaseUrl = () => {
   if (process.env.NODE_ENV === 'production') {
-    return ''; // Return empty string since we're using /api in the requests
+    return '';
   }
   return 'http://localhost:5000';
 };
