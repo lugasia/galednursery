@@ -2,8 +2,9 @@ services:
   - type: web
     name: plant-nursery-api
     env: node
-    buildCommand: npm install && cd server && npm install
-    startCommand: npm run start-server
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
@@ -19,8 +20,9 @@ services:
   - type: web
     name: plant-nursery-app
     env: static
-    buildCommand: npm install && npm run install-client && npm run build-client
-    staticPublishPath: ./client/build
+    rootDir: client
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./build
     envVars:
       - key: REACT_APP_API_URL
         value: https://plant-nursery-api.onrender.com
