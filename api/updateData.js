@@ -1,6 +1,47 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+
+// GET /api/auth/login
+router.post('/auth/login', async (req, res) => {
+  const { username, password } = req.body;
+  
+  try {
+    // Fetch admin credentials from GitHub
+    const response = await axios.get('https://raw.githubusercontent.com/lugasia/galednursery/main/admin.json');
+    const data = response.data;
+    
+    // Check if admin credentials exist
+    if (!data.admin || !data.admin.username || !data.admin.password) {
+      return res.status(500).json({ message: 'Admin credentials not configured' });
+    }
+    
+    // Verify credentials
+    if (username === data.admin.username && password === data.admin.password) {
+      // Generate JWT token
+      const token = jwt.sign(
+        { id: 'admin', role: 'admin' },
+        process.env.JWT_SECRET || 'your-secret-key',
+        { expiresIn: '24h' }
+      );
+      
+      return res.json({
+        token,
+        user: {
+          id: 'admin',
+          name: 'מנהל המערכת',
+          role: 'admin'
+        }
+      });
+    }
+    
+    return res.status(401).json({ message: 'Invalid credentials' });
+  } catch (err) {
+    console.error('Login error:', err);
+    return res.status(500).json({ message: 'Login failed' });
+  }
+});
 
 // POST /api/updateData
 router.post('/', async (req, res) => {
