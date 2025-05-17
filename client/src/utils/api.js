@@ -9,7 +9,8 @@ const getBaseUrl = () => {
   
   // Check if we're on Vercel
   if (window.location.hostname.includes('vercel.app')) {
-    return `${window.location.origin}/api`;
+    // Just use the base path for API requests
+    return '/api';
   }
   
   // Default to Render deployment

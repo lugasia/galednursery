@@ -17,9 +17,14 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.CLIENT_URL, 'https://plant-nursery-app.onrender.com', 'https://galednursery.vercel.app']
-    : ['http://localhost:3000', 'https://plant-nursery-app.onrender.com'],
+  origin: function(origin, callback) {
+    // Allow any origin that includes vercel.app or localhost
+    if (!origin || origin.includes('vercel.app') || origin.includes('localhost')) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Allow all origins for now to debug
+    }
+  },
   credentials: true
 }));
 app.use(express.json({ limit: '50mb' }));
