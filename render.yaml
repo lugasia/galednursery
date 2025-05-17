@@ -2,8 +2,9 @@ services:
   - type: web
     name: plant-nursery-api
     env: node
-    buildCommand: chmod +x render-build.sh && ./render-build.sh && cd server
-    startCommand: cd server && npm start
+    plan: free
+    buildCommand: cp render-package.json package.json && npm install
+    startCommand: node server/index.js
     envVars:
       - key: NODE_ENV
         value: production
@@ -18,7 +19,8 @@ services:
 
   - type: static
     name: plant-nursery-app
-    buildCommand: chmod +x render-build.sh && ./render-build.sh
+    plan: free
+    buildCommand: cd client && npm install && npm run build
     staticPublishPath: ./client/build
     envVars:
       - key: REACT_APP_API_URL
