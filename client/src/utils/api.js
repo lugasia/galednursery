@@ -2,13 +2,10 @@ import axios from 'axios';
 
 // Determine the API base URL based on the current environment
 const getBaseUrl = () => {
-  // In production (Vercel or Render), use relative path
   if (process.env.NODE_ENV === 'production') {
-    return '/api';
+    return ''; // Return empty string since we're using /api in the requests
   }
-  
-  // In development, use localhost
-  return 'http://localhost:5001';
+  return 'http://localhost:5000';
 };
 
 // הערה: הסרנו את הפונקציה handleApiResponse כי היא לא בשימוש

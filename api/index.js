@@ -6,10 +6,10 @@ const cors = require('cors');
 const path = require('path');
 
 // Import routes
-const plantRoutes = require('../server/routes/plants');
-const categoryRoutes = require('../server/routes/categories');
-const orderRoutes = require('../server/routes/orders');
-const authRoutes = require('../server/routes/auth');
+const plantRoutes = require('./plants');
+const categoryRoutes = require('./categories');
+const orderRoutes = require('./orders');
+const authRoutes = require('./auth');
 
 // Create Express app
 const app = express();
@@ -47,7 +47,11 @@ app.use('/api/auth', authRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Server Error:', err);
-  res.status(500).json({ message: 'Something went wrong!', error: err.message });
+  res.status(500).json({ 
+    message: 'Something went wrong!', 
+    error: err.message,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+  });
 });
 
 // Serverless function handler
@@ -60,7 +64,10 @@ module.exports = async (req, res) => {
     await connectToDatabase();
   } catch (error) {
     console.error('Database connection error:', error);
-    return res.status(500).json({ error: 'Database connection failed' });
+    return res.status(500).json({ 
+      error: 'Database connection failed',
+      details: error.message
+    });
   }
   
   // Handle the request with our Express app
