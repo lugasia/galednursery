@@ -4,7 +4,7 @@ import axios from 'axios';
 const getBaseUrl = () => {
   // In production (Vercel or Render), use relative path
   if (process.env.NODE_ENV === 'production') {
-    return '';
+    return '/api';
   }
   
   // In development, use localhost
