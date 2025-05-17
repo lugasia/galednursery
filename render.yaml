@@ -8,11 +8,11 @@ services:
       - key: NODE_ENV
         value: production
       - key: MONGODB_URI
-        sync: false
+        value: mongodb+srv://amir:UwZ3SotJuiqUpZ7J@cluster0.iqbyvcl.mongodb.net/galednursery?retryWrites=true&w=majority&appName=Cluster0
       - key: JWT_SECRET
-        sync: false
+        value: kibbutz_gilad_nursery_secret_key_2025
       - key: PORT
-        value: 10000
+        value: 5001
       - key: CLIENT_URL
         value: https://plant-nursery-app.onrender.com
 
