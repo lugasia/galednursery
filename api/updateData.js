@@ -3,6 +3,9 @@ const axios = require('axios');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 
+// Simple test route
+router.get('/test', (req, res) => res.json({ ok: true }));
+
 // GET /api/auth/login
 router.post('/auth/login', async (req, res) => {
   const { username, password } = req.body;
