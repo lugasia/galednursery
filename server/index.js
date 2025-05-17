@@ -12,7 +12,8 @@ const authRoutes = require('./routes/auth');
 
 // Create Express app
 const app = express();
-const PORT = process.env.PORT || 5001;
+// Use default port 3000 for local development, but let Vercel set its own port in production
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
