@@ -37,7 +37,9 @@ const Navbar = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        console.log('Fetching categories from:', api.defaults.baseURL + '/api/categories');
         const res = await api.get('/api/categories');
+        console.log('Categories response:', res);
         // Ensure we have an array of categories
         if (res.data && Array.isArray(res.data)) {
           setCategories(res.data);

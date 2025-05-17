@@ -34,7 +34,9 @@ const HomePage = () => {
         const categoriesRes = await api.get('/api/categories');
         
         // Fetch plants
+        console.log('Fetching plants from:', api.defaults.baseURL + '/api/plants');
         const plantsRes = await api.get('/api/plants');
+        console.log('Plants response:', plantsRes);
         
         // Ensure we have an array of plants
         if (!plantsRes.data || !Array.isArray(plantsRes.data)) {
