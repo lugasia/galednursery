@@ -9,7 +9,8 @@
     { "src": "/static/(.*)", "dest": "/client/build/static/$1" },
     { "src": "/favicon.ico", "dest": "/client/build/favicon.ico" },
     { "src": "/manifest.json", "dest": "/client/build/manifest.json" },
-    { "src": "/(.+).(js|json|css|map|ico|png|jpg|jpeg|svg|gif)", "dest": "/client/build/$1.$2" }    { "src": "/(.*)", "dest": "/client/build/index.html" }
+    { "src": "/(.+).(js|json|css|map|ico|png|jpg|jpeg|svg|gif)", "dest": "/client/build/$1.$2" },
+    { "src": "/(.*)", "dest": "/client/build/index.html" }
   ],
   "env": {
     "NODE_ENV": "production",
