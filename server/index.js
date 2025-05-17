@@ -17,8 +17,8 @@ const PORT = process.env.PORT || 5001;
 // Middleware
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? process.env.CLIENT_URL 
-    : 'https://plant-nursery-app.onrender.com',
+    ? [process.env.CLIENT_URL, 'https://plant-nursery-app.onrender.com', 'https://galednursery.vercel.app']
+    : ['http://localhost:3000', 'https://plant-nursery-app.onrender.com'],
   credentials: true
 }));
 app.use(express.json({ limit: '50mb' }));

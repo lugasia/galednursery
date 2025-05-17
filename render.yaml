@@ -3,7 +3,7 @@ services:
     name: plant-nursery-api
     env: node
     plan: free
-    buildCommand: cp render-package.json package.json && npm install
+    buildCommand: bash ./render-build.sh
     startCommand: node server/index.js
     envVars:
       - key: NODE_ENV

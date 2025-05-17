@@ -1,8 +1,19 @@
 {
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/(.*)", "destination": "/client/build/index.html" }
+  "version": 2,
+  "builds": [
+    { "src": "server/index.js", "use": "@vercel/node" },
+    { "src": "client/package.json", "use": "@vercel/static-build", "config": { "distDir": "build" } }
   ],
-  "cleanUrls": true,
-  "trailingSlash": false
+  "routes": [
+    { "src": "/api/(.*)", "dest": "server/index.js" },
+    { "src": "^/static/(.*)", "dest": "client/build/static/$1" },
+    { "src": "^/favicon.ico", "dest": "client/build/favicon.ico" },
+    { "src": "^/manifest.json", "dest": "client/build/manifest.json" },
+    { "src": "^/(.*).(js|json|css|map|ico|png|jpg|jpeg|svg|gif)", "dest": "client/build/$1.$2" },
+    { "src": "/(.*)", "dest": "client/build/index.html" }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "PORT": "5001"
+  }
 }
