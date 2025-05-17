@@ -16,15 +16,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
+// In production, allow all origins to simplify deployment
 app.use(cors({
-  origin: function(origin, callback) {
-    // Allow any origin that includes vercel.app or localhost
-    if (!origin || origin.includes('vercel.app') || origin.includes('localhost')) {
-      callback(null, true);
-    } else {
-      callback(null, true); // Allow all origins for now to debug
-    }
-  },
+  origin: true, // Allow all origins
   credentials: true
 }));
 app.use(express.json({ limit: '50mb' }));
