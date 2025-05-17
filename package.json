@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm start\"",
-    "build": "echo 'Building from root package.json'",
+    "build": "npm run install-server && npm run install-client && npm run build-client",
     "start": "cd server && npm start",
     "install-server": "cd server && npm install",
     "install-client": "cd client && npm install",
     "build-client": "cd client && npm run build",
     "start-server": "cd server && npm start",
-    "vercel-build": "echo 'No vercel-build needed in root'"
+    "vercel-build": "npm run build"
   },
   "devDependencies": {
     "concurrently": "^8.0.1"
