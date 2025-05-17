@@ -1,9 +1,9 @@
 // Serverless function for Vercel deployment
-require('dotenv').config({ path: './server/.env.vercel' });
+require('dotenv').config();
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
-const dbConnect = require('../server/utils/dbConnect');
 
 // Import routes
 const plantRoutes = require('../server/routes/plants');
@@ -18,6 +18,25 @@ const app = express();
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// Connect to MongoDB
+let isConnected = false;
+const connectToDatabase = async () => {
+  if (isConnected) return;
+  
+  try {
+    const mongoUri = process.env.MONGODB_URI;
+    if (!mongoUri) {
+      throw new Error('MONGODB_URI environment variable is not set');
+    }
+    await mongoose.connect(mongoUri);
+    isConnected = true;
+    console.log('Connected to MongoDB');
+  } catch (err) {
+    console.error('Could not connect to MongoDB', err);
+    throw err;
+  }
+};
 
 // Routes
 app.use('/api/plants', plantRoutes);
@@ -38,7 +57,7 @@ module.exports = async (req, res) => {
   
   // Connect to database
   try {
-    await dbConnect();
+    await connectToDatabase();
   } catch (error) {
     console.error('Database connection error:', error);
     return res.status(500).json({ error: 'Database connection failed' });
