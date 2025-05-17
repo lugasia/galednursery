@@ -8,6 +8,7 @@ const path = require('path');
 // Import routes
 const plantRoutes = require('./plants');
 const categoryRoutes = require('./categories2');
+const updateDataRouter = require('./updateData');
 // Removed orders and auth routes
 
 // Create Express app
@@ -67,6 +68,7 @@ const connectToDatabase = async () => {
 // Routes
 app.use('/api/plants', plantRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/updateData', updateDataRouter);
 // Removed orders and auth routes
 
 // Error handling middleware
