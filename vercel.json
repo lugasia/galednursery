@@ -8,6 +8,6 @@
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.js" },
     { "source": "/hello", "destination": "/api/test.js" },
-    { "source": "/(.*)", "destination": "/client/build/index.html" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
