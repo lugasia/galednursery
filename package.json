@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "api/index.js",
   "scripts": {
-    "vercel-build": "cd client && npm install && npm run build"
   },
   "dependencies": {
     "express": "^4.18.2",
