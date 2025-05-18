@@ -45,3 +45,5 @@ A complete system for managing plant inventory and customer orders for the Kibbu
 - `/client` - React frontend application
 - `/server` - Node.js backend API
 - `/docs` - Documentation and resources
+
+Trigger new Vercel deployment.
