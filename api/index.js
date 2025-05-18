@@ -6,7 +6,7 @@ const path = require('path');
 
 // Import routes
 const plantRoutes = require('./plants');
-const categoryRoutes = require('./categories2');
+const categoryRoutes = require('./categories');
 const updateDataRouter = require('./updateData');
 
 // Create Express app
