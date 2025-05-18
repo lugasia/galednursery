@@ -22,10 +22,23 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Root route
+app.get('/api', (req, res) => {
+  res.json({ 
+    message: 'Galed Nursery API',
+    version: '1.0.0',
+    endpoints: {
+      plants: '/api/plants',
+      categories: '/api/categories',
+      auth: '/api/auth'
+    }
+  });
+});
+
 // Routes
 app.use('/api/plants', plantRoutes);
 app.use('/api/categories', categoryRoutes);
-app.use('/api', updateDataRouter); // This will handle both /api/updateData and /api/auth/login
+app.use('/api', updateDataRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -46,12 +59,20 @@ app.use((err, req, res, next) => {
 
 // Serverless function handler
 module.exports = async (req, res) => {
-  // Log incoming requests
-  console.log(`API Request: ${req.method} ${req.url}`);
-  console.log('Environment:', process.env.NODE_ENV);
-  
-  // Handle the request with our Express app
-  return app(req, res);
+  try {
+    // Log incoming requests
+    console.log(`API Request: ${req.method} ${req.url}`);
+    console.log('Environment:', process.env.NODE_ENV);
+    
+    // Handle the request with our Express app
+    return app(req, res);
+  } catch (err) {
+    console.error('Unhandled error:', err);
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  }
 };
 
 if (require.main === module) {

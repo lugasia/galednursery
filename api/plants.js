@@ -1,40 +1,54 @@
 const express = require('express');
-const Plant = require('../models/Plant');
 const router = express.Router();
 const data = require('../data.json');
 const auth = require('./middleware/auth');
 
 // Get all plants
 router.get('/', (req, res) => {
-  res.json(data.plants || []);
+  try {
+    res.json(data.plants || []);
+  } catch (err) {
+    console.error('Error fetching plants:', err);
+    res.status(500).json({ message: 'Error fetching plants' });
+  }
 });
 
 // Get plant by ID
 router.get('/:id', (req, res) => {
-  const plant = (data.plants || []).find(p => p._id == req.params.id);
-  if (plant) {
-    res.json(plant);
-  } else {
-    res.status(404).json({ message: 'Plant not found' });
+  try {
+    const plant = (data.plants || []).find(p => p._id == req.params.id);
+    if (plant) {
+      res.json(plant);
+    } else {
+      res.status(404).json({ message: 'Plant not found' });
+    }
+  } catch (err) {
+    console.error('Error fetching plant:', err);
+    res.status(500).json({ message: 'Error fetching plant' });
   }
 });
 
-// Get low stock plants (simulate admin route)
-router.get('/admin/low-stock', (req, res) => {
-  const lowStock = (data.plants || []).filter(p => p.stock > 0 && p.stock < 5);
-  res.json(lowStock);
+// Get low stock plants
+router.get('/admin/low-stock', auth, (req, res) => {
+  try {
+    const lowStock = (data.plants || []).filter(p => p.stock > 0 && p.stock < 5);
+    res.json(lowStock);
+  } catch (err) {
+    console.error('Error fetching low stock plants:', err);
+    res.status(500).json({ message: 'Error fetching low stock plants' });
+  }
 });
 
-// GET /api/plants/admin/popular
-router.get('/admin/popular', auth, async (req, res) => {
+// Get popular plants
+router.get('/admin/popular', auth, (req, res) => {
   try {
-    const plants = await Plant.find({ isActive: true })
-      .sort({ popularity: -1 })
-      .limit(10)
-      .populate('category', 'name');
-    res.status(200).json(plants);
+    const popular = (data.plants || [])
+      .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
+      .slice(0, 10);
+    res.json(popular);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('Error fetching popular plants:', err);
+    res.status(500).json({ message: 'Error fetching popular plants' });
   }
 });
 
