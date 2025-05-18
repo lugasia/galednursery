@@ -53,3 +53,9 @@ module.exports = async (req, res) => {
   // Handle the request with our Express app
   return app(req, res);
 };
+
+if (require.main === module) {
+  app.listen(5001, () => {
+    console.log('Server is running on port 5001');
+  });
+}

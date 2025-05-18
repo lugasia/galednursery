@@ -87,4 +87,11 @@ router.post('/', async (req, res) => {
   }
 });
 
+// Add a dummy /auth/me route for local development
+router.get('/auth/me', (req, res) => {
+  // In a real app, you'd verify the token and return the user
+  // For local testing, just return a static admin user
+  res.json({ id: 'admin', name: 'מנהל המערכת', role: 'admin' });
+});
+
 module.exports = router; 

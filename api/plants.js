@@ -1,19 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const Plant = require('./models/Plant');
+const data = require('../data.json');
 const auth = require('./middleware/auth');
 
-// GET /api/plants/admin/low-stock
-router.get('/admin/low-stock', auth, async (req, res) => {
-  try {
-    const lowStockThreshold = 5;
-    const plants = await Plant.find({ stock: { $lt: lowStockThreshold }, isActive: true })
-      .populate('category', 'name')
-      .sort({ stock: 1 });
-    res.status(200).json(plants);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+// Get all plants
+router.get('/', (req, res) => {
+  res.json(data.plants || []);
+});
+
+// Get plant by ID
+router.get('/:id', (req, res) => {
+  const plant = (data.plants || []).find(p => p._id == req.params.id);
+  if (plant) {
+    res.json(plant);
+  } else {
+    res.status(404).json({ message: 'Plant not found' });
   }
+});
+
+// Get low stock plants (simulate admin route)
+router.get('/admin/low-stock', (req, res) => {
+  const lowStock = (data.plants || []).filter(p => p.stock > 0 && p.stock < 5);
+  res.json(lowStock);
 });
 
 // GET /api/plants/admin/popular
@@ -24,17 +32,6 @@ router.get('/admin/popular', auth, async (req, res) => {
       .limit(10)
       .populate('category', 'name');
     res.status(200).json(plants);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// GET /api/plants/:id
-router.get('/:id', async (req, res) => {
-  try {
-    const plant = await Plant.findById(req.params.id).populate('category', 'name icon');
-    if (!plant) return res.status(404).json({ message: 'Plant not found' });
-    res.status(200).json(plant);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -82,18 +79,6 @@ router.delete('/:id', auth, async (req, res) => {
     plant.isActive = false;
     await plant.save();
     res.status(200).json({ message: 'Plant deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// GET /api/plants
-router.get('/', async (req, res) => {
-  try {
-    const plants = await Plant.find({ isActive: true })
-      .populate('category', 'name icon')
-      .sort({ name: 1 });
-    res.status(200).json(plants);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
