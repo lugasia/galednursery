@@ -17,7 +17,7 @@ export const fetchDataFromGitHub = async () => {
 // Keep the existing API configuration for other endpoints
 const getBaseUrl = () => {
   if (process.env.NODE_ENV === 'production') {
-    return '';
+    return 'https://galednursery.vercel.app';
   }
   return 'http://localhost:5000';
 };
