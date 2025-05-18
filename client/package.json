@@ -2,7 +2,7 @@
   "name": "plant-nursery-client",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/",
+  "homepage": "",
   "dependencies": {
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.10.6",
