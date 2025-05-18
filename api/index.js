@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const dbConnect = require('../utils/dbConnect').default; // Corrected import for ES Module
 
 // Import routes
 const plantRoutes = require('./plants');
@@ -60,6 +61,9 @@ app.use((err, req, res, next) => {
 // Serverless function handler
 module.exports = async (req, res) => {
   try {
+    // Connect to DB
+    await dbConnect(); // Ensure DB connection
+
     // Log incoming requests
     console.log(`API Request: ${req.method} ${req.url}`);
     console.log('Environment:', process.env.NODE_ENV);
