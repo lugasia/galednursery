@@ -54,33 +54,51 @@ async function saveDataToGitHub(newData) {
     
     const fileData = await getRes.json();
 
-    // 2. Update the file
-    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message: 'Update data.json',
-        content: Buffer.from(JSON.stringify(newData, null, 2)).toString('base64'),
-        sha: fileData.sha,
-        branch: BRANCH
-      })
-    });
+    // 2. Update the file with retry logic
+    let retries = 3;
+    while (retries > 0) {
+      try {
+        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${GITHUB_TOKEN}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: `Update data.json - ${new Date().toISOString()}`,
+            content: Buffer.from(JSON.stringify(newData, null, 2)).toString('base64'),
+            sha: fileData.sha,
+            branch: BRANCH
+          })
+        });
 
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error('GitHub update error:', {
-        status: res.status,
-        statusText: res.statusText,
-        error: errorText
-      });
-      throw new Error(`Failed to update data.json on GitHub: ${res.status} ${res.statusText}`);
+        if (!res.ok) {
+          const errorText = await res.text();
+          console.error('GitHub update error:', {
+            status: res.status,
+            statusText: res.statusText,
+            error: errorText
+          });
+          
+          if (res.status === 409 && retries > 1) {
+            // If conflict, fetch latest data and retry
+            const latestData = await fetchDataFromGitHub();
+            newData = { ...latestData, ...newData };
+            retries--;
+            continue;
+          }
+          
+          throw new Error(`Failed to update data.json on GitHub: ${res.status} ${res.statusText}`);
+        }
+        
+        return await res.json();
+      } catch (error) {
+        if (retries <= 1) throw error;
+        retries--;
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
+      }
     }
-    
-    return await res.json();
   } catch (error) {
     console.error('Error in saveDataToGitHub:', error);
     throw error;
