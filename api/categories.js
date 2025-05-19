@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { fetchDataFromGitHub, saveDataToGitHub } = require('../utils/githubData');
+const auth = require('./middleware/auth');
 
 // GET all categories
 router.get('/', async (req, res) => {
@@ -25,7 +26,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST create new category
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   try {
     const data = await fetchDataFromGitHub();
     const newCategory = { id: Date.now().toString(), ...req.body };
@@ -39,7 +40,7 @@ router.post('/', async (req, res) => {
 });
 
 // PUT update category
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
   try {
     const data = await fetchDataFromGitHub();
     const idx = (data.categories || []).findIndex(cat => cat.id == req.params.id);
@@ -53,7 +54,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE category
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   try {
     const data = await fetchDataFromGitHub();
     const idx = (data.categories || []).findIndex(cat => cat.id == req.params.id);

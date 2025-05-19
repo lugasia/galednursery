@@ -38,12 +38,49 @@ app.get('/api', (req, res) => {
   });
 });
 
-// Routes
-app.use('/api/plants', plantRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api', updateDataRouter);
+// Debug router info
+console.log('Router types:');
+console.log('plantRoutes:', typeof plantRoutes, plantRoutes && !!plantRoutes.stack);
+console.log('categoryRoutes:', typeof categoryRoutes, categoryRoutes && !!categoryRoutes.stack);
+console.log('authRoutes:', typeof authRoutes, authRoutes && !!authRoutes.stack);
+console.log('orderRoutes:', typeof orderRoutes, orderRoutes && !!orderRoutes.stack);
+console.log('updateDataRouter:', typeof updateDataRouter, updateDataRouter && !!updateDataRouter.stack);
+
+// Routes - make sure all routers are properly defined
+if (plantRoutes && (typeof plantRoutes === 'function' || plantRoutes.handle || plantRoutes.stack)) {
+  app.use('/api/plants', plantRoutes);
+} else {
+  console.error('plantRoutes is not a valid router:', plantRoutes);
+  app.use('/api/plants', (req, res) => res.status(500).json({ error: 'Router not properly configured' }));
+}
+
+if (categoryRoutes && (typeof categoryRoutes === 'function' || categoryRoutes.handle || categoryRoutes.stack)) {
+  app.use('/api/categories', categoryRoutes);
+} else {
+  console.error('categoryRoutes is not a valid router:', categoryRoutes);
+  app.use('/api/categories', (req, res) => res.status(500).json({ error: 'Router not properly configured' }));
+}
+
+if (authRoutes && (typeof authRoutes === 'function' || authRoutes.handle || authRoutes.stack)) {
+  app.use('/api/auth', authRoutes);
+} else {
+  console.error('authRoutes is not a valid router:', authRoutes);
+  app.use('/api/auth', (req, res) => res.status(500).json({ error: 'Router not properly configured' }));
+}
+
+if (orderRoutes && (typeof orderRoutes === 'function' || orderRoutes.handle || orderRoutes.stack)) {
+  app.use('/api/orders', orderRoutes);
+} else {
+  console.error('orderRoutes is not a valid router:', orderRoutes);
+  app.use('/api/orders', (req, res) => res.status(500).json({ error: 'Router not properly configured' }));
+}
+
+if (updateDataRouter && (typeof updateDataRouter === 'function' || updateDataRouter.handle || updateDataRouter.stack)) {
+  app.use('/api', updateDataRouter);
+} else {
+  console.error('updateDataRouter is not a valid router:', updateDataRouter);
+  // Don't add a fallback for root API routes to avoid conflicts
+}
 
 // Error handling middleware
 app.use((err, req, res, next) => {

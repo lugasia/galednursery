@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { fetchDataFromGitHub, saveDataToGitHub } = require('../utils/githubData');
+const auth = require('./middleware/auth');
 
-// Get all orders
-router.get('/', async (req, res) => {
+// Get all orders (protected)
+router.get('/', auth, async (req, res) => {
   try {
     const data = await fetchDataFromGitHub();
     res.json(data.orders || []);
@@ -12,7 +13,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Create new order
+// Create new order (public)
 router.post('/', async (req, res) => {
   try {
     const data = await fetchDataFromGitHub();
