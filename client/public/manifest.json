@@ -1,6 +1,6 @@
 {
-  "short_name": "משתלת גלעד",
-  "name": "מערכת ניהול משתלת קיבוץ גלעד",
+  "short_name": "Galed Nursery",
+  "name": "משתלת קיבוץ גלעד",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,7 +20,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#2e7d32",
+  "theme_color": "#000000",
   "background_color": "#ffffff",
   "dir": "rtl",
   "lang": "he"
