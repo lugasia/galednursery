@@ -33,7 +33,11 @@ async function saveDataToGitHub(newData) {
     })
   });
 
-  if (!res.ok) throw new Error('Failed to update data.json on GitHub');
+  if (!res.ok) {
+    const errorBody = await res.text();
+    console.error('GitHub API error:', errorBody);
+    throw new Error('Failed to update data.json on GitHub: ' + errorBody);
+  }
   return await res.json();
 }
 
