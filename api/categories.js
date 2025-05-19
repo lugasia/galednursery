@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { fetchDataFromGitHub } = require('../utils/githubData');
+const { fetchDataFromGitHub, saveDataToGitHub } = require('../utils/githubData');
 
 // GET all categories
 router.get('/', async (req, res) => {
@@ -27,9 +27,12 @@ router.get('/:id', async (req, res) => {
 // POST create new category
 router.post('/', async (req, res) => {
   try {
-    const category = new Category(req.body);
-    await category.save();
-    res.status(201).json(category);
+    const data = await fetchDataFromGitHub();
+    const newCategory = { id: Date.now().toString(), ...req.body };
+    data.categories = data.categories || [];
+    data.categories.push(newCategory);
+    await saveDataToGitHub(data);
+    res.status(201).json(newCategory);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -38,9 +41,12 @@ router.post('/', async (req, res) => {
 // PUT update category
 router.put('/:id', async (req, res) => {
   try {
-    const category = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-    if (!category) return res.status(404).json({ message: 'Category not found' });
-    res.json(category);
+    const data = await fetchDataFromGitHub();
+    const idx = (data.categories || []).findIndex(cat => cat.id == req.params.id);
+    if (idx === -1) return res.status(404).json({ message: 'Category not found' });
+    data.categories[idx] = { ...data.categories[idx], ...req.body };
+    await saveDataToGitHub(data);
+    res.json(data.categories[idx]);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -49,8 +55,11 @@ router.put('/:id', async (req, res) => {
 // DELETE category
 router.delete('/:id', async (req, res) => {
   try {
-    const category = await Category.findByIdAndDelete(req.params.id);
-    if (!category) return res.status(404).json({ message: 'Category not found' });
+    const data = await fetchDataFromGitHub();
+    const idx = (data.categories || []).findIndex(cat => cat.id == req.params.id);
+    if (idx === -1) return res.status(404).json({ message: 'Category not found' });
+    data.categories.splice(idx, 1);
+    await saveDataToGitHub(data);
     res.json({ message: 'Category deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });

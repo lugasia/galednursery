@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { fetchDataFromGitHub } = require('../utils/githubData');
+const { fetchDataFromGitHub, saveDataToGitHub } = require('../utils/githubData');
 const auth = require('./middleware/auth');
 
 // Get all plants
@@ -60,72 +60,60 @@ router.get('/admin/popular', auth, (req, res) => {
   }
 });
 
-// PUT /api/plants/:id
-router.put('/:id', auth, async (req, res) => {
+// POST create new plant
+router.post('/', auth, async (req, res) => {
   try {
-    const plantData = {
-      name: req.body.name,
-      category: req.body.category,
-      height: req.body.height,
-      watering: req.body.watering,
-      light: req.body.light,
-      uses: req.body.uses,
-      description: req.body.description,
-      stock: req.body.stock
-    };
-    if (req.body.imageBase64) plantData.imageBase64 = req.body.imageBase64;
-    const updatedPlant = await Plant.findByIdAndUpdate(req.params.id, plantData, { new: true, runValidators: true });
-    if (!updatedPlant) return res.status(404).json({ message: 'Plant not found' });
-    res.status(200).json(updatedPlant);
+    const data = await fetchDataFromGitHub();
+    const newPlant = { id: Date.now().toString(), ...req.body };
+    data.plants = data.plants || [];
+    data.plants.push(newPlant);
+    await saveDataToGitHub(data);
+    res.status(201).json(newPlant);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-// PATCH /api/plants/:id/stock
+// PUT update plant
+router.put('/:id', auth, async (req, res) => {
+  try {
+    const data = await fetchDataFromGitHub();
+    const idx = (data.plants || []).findIndex(plant => plant.id == req.params.id);
+    if (idx === -1) return res.status(404).json({ message: 'Plant not found' });
+    data.plants[idx] = { ...data.plants[idx], ...req.body };
+    await saveDataToGitHub(data);
+    res.json(data.plants[idx]);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// PATCH update plant stock
 router.patch('/:id/stock', auth, async (req, res) => {
   try {
     if (typeof req.body.stock === 'undefined') return res.status(400).json({ message: 'Stock value is required' });
-    const updatedPlant = await Plant.findByIdAndUpdate(req.params.id, { stock: req.body.stock }, { new: true, runValidators: true });
-    if (!updatedPlant) return res.status(404).json({ message: 'Plant not found' });
-    res.status(200).json(updatedPlant);
+    const data = await fetchDataFromGitHub();
+    const idx = (data.plants || []).findIndex(plant => plant.id == req.params.id);
+    if (idx === -1) return res.status(404).json({ message: 'Plant not found' });
+    data.plants[idx].stock = req.body.stock;
+    await saveDataToGitHub(data);
+    res.json(data.plants[idx]);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-// DELETE /api/plants/:id
+// DELETE plant
 router.delete('/:id', auth, async (req, res) => {
   try {
-    const plant = await Plant.findById(req.params.id);
-    if (!plant) return res.status(404).json({ message: 'Plant not found' });
-    plant.isActive = false;
-    await plant.save();
-    res.status(200).json({ message: 'Plant deleted successfully' });
+    const data = await fetchDataFromGitHub();
+    const idx = (data.plants || []).findIndex(plant => plant.id == req.params.id);
+    if (idx === -1) return res.status(404).json({ message: 'Plant not found' });
+    data.plants.splice(idx, 1);
+    await saveDataToGitHub(data);
+    res.json({ message: 'Plant deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: err.message });
-  }
-});
-
-// POST /api/plants
-router.post('/', auth, async (req, res) => {
-  try {
-    const plantData = {
-      name: req.body.name,
-      category: req.body.category,
-      height: req.body.height,
-      watering: req.body.watering,
-      light: req.body.light,
-      uses: req.body.uses,
-      description: req.body.description,
-      stock: req.body.stock,
-      imageBase64: req.body.imageBase64 || ''
-    };
-    const plant = new Plant(plantData);
-    const savedPlant = await plant.save();
-    res.status(201).json(savedPlant);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
   }
 });
 
