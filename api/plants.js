@@ -37,25 +37,25 @@ router.get('/category/:categoryId', async (req, res) => {
 });
 
 // Get low stock plants
-router.get('/admin/low-stock', auth, (req, res) => {
+router.get('/admin/low-stock', auth, async (req, res) => {
   try {
+    const data = await fetchDataFromGitHub();
     const lowStock = (data.plants || []).filter(p => p.stock > 0 && p.stock < 5);
     res.json(lowStock);
   } catch (err) {
-    console.error('Error fetching low stock plants:', err);
     res.status(500).json({ message: 'Error fetching low stock plants' });
   }
 });
 
 // Get popular plants
-router.get('/admin/popular', auth, (req, res) => {
+router.get('/admin/popular', auth, async (req, res) => {
   try {
+    const data = await fetchDataFromGitHub();
     const popular = (data.plants || [])
       .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
       .slice(0, 10);
     res.json(popular);
   } catch (err) {
-    console.error('Error fetching popular plants:', err);
     res.status(500).json({ message: 'Error fetching popular plants' });
   }
 });
