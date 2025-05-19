@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const REPO = 'lugasia/galednursery';
 const FILE_PATH = 'data.json';
