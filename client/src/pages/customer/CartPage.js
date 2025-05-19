@@ -111,6 +111,9 @@ const CartPage = () => {
       // Send order to the backend
       const response = await api.post('/api/orders', orderData);
       
+      // Refresh plants after order to update stock
+      await api.get('/api/plants');
+      
       // Save the order number from the response
       if (response.data && response.data.orderNumber) {
         setOrderNumber(response.data.orderNumber);

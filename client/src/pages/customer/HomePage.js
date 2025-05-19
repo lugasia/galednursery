@@ -10,7 +10,8 @@ import {
   IconButton,
   Divider,
   Alert,
-  Button
+  Button,
+  Chip
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Layout from '../../components/layout/Layout';
@@ -117,25 +118,22 @@ const HomePage = () => {
           
           {/* Category Buttons */}
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center', mb: 4 }}>
-            <Button
-              variant={selectedCategory === 'all' ? 'contained' : 'outlined'}
-              color="primary"
+            <Chip
+              label={`הכל (${plants.length})`}
+              color={selectedCategory === 'all' ? 'primary' : 'default'}
               onClick={() => handleCategoryChange(null, 'all')}
               sx={{ m: 0.5, borderRadius: '20px', px: 2 }}
-            >
-              הכל ({plants.length})
-            </Button>
-            
+              clickable
+            />
             {categoriesWithCount.map(category => (
-              <Button
+              <Chip
                 key={category._id}
-                variant={selectedCategory === category._id ? 'contained' : 'outlined'}
-                color="primary"
+                label={`${category.name} (${category.count})`}
+                color={selectedCategory === category._id ? 'primary' : 'default'}
                 onClick={() => handleCategoryChange(null, category._id)}
                 sx={{ m: 0.5, borderRadius: '20px', px: 2 }}
-              >
-                {category.name} ({category.count})
-              </Button>
+                clickable
+              />
             ))}
           </Box>
         </Box>
