@@ -15,7 +15,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import Layout from '../../components/layout/Layout';
 import PlantCard from '../../components/customer/PlantCard';
-import { fetchDataFromGitHub } from '../../utils/api';
+import api from '../../utils/api';
 
 const HomePage = () => {
   const [plants, setPlants] = useState([]);
@@ -29,54 +29,40 @@ const HomePage = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        
-        // Fetch all data from GitHub
-        const data = await fetchDataFromGitHub();
-        
-        if (!data || !data.plants || !Array.isArray(data.plants) || !data.categories || !Array.isArray(data.categories)) {
-          console.error('Data is not in expected format:', data);
+        // Fetch all plants and categories from API
+        const plantsRes = await api.get('/api/plants');
+        const categoriesRes = await api.get('/api/categories');
+        const plantsData = plantsRes.data;
+        const categoriesData = categoriesRes.data;
+        if (!Array.isArray(plantsData) || !Array.isArray(categoriesData)) {
           setError('פורמט הנתונים שגוי');
           setLoading(false);
           return;
         }
-        
         // Filter out plants with no stock
-        const plantsWithStock = data.plants.filter(plant => plant && plant.stock > 0);
+        const plantsWithStock = plantsData.filter(plant => plant && plant.stock > 0);
         setPlants(plantsWithStock);
-        
         // Calculate plant count per category
         const categoryCounts = {};
         plantsWithStock.forEach(plant => {
-          if (plant.category && plant.category._id) {
-            if (!categoryCounts[plant.category._id]) {
-              categoryCounts[plant.category._id] = {
-                count: 0,
-                name: plant.category.name,
-                _id: plant.category._id
-              };
-            }
-            categoryCounts[plant.category._id].count++;
+          if (plant.category) {
+            categoryCounts[plant.category] = (categoryCounts[plant.category] || 0) + 1;
           }
         });
-        
         // Filter categories with at least one plant
-        const categoriesWithPlants = data.categories
-          .filter(category => categoryCounts[category._id] && categoryCounts[category._id].count > 0)
+        const categoriesWithPlants = categoriesData
+          .filter(category => categoryCounts[category.id])
           .map(category => ({
             ...category,
-            count: categoryCounts[category._id] ? categoryCounts[category._id].count : 0
+            count: categoryCounts[category.id] || 0
           }));
-        
         setCategoriesWithCount(categoriesWithPlants);
-        
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching data:', err);
         setError('אירעה שגיאה בטעינת הנתונים. אנא נסה שוב מאוחר יותר.');
         setLoading(false);
       }
     };
-    
     fetchData();
   }, []);
   

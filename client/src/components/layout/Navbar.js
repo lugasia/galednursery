@@ -24,7 +24,7 @@ import {
   Close as CloseIcon
 } from '@mui/icons-material';
 import { useCart } from '../../context/CartContext';
-import { fetchDataFromGitHub } from '../../utils/api';
+import api from '../../utils/api';
 
 const Navbar = () => {
   const { totalItems } = useCart();
@@ -37,19 +37,12 @@ const Navbar = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const data = await fetchDataFromGitHub();
-        if (data && data.categories && Array.isArray(data.categories)) {
-          setCategories(data.categories);
-        } else {
-          console.error('Categories data is not in expected format:', data);
-          setCategories([]);
-        }
+        const res = await api.get('/api/categories');
+        setCategories(res.data);
       } catch (err) {
-        console.error('Error fetching categories:', err);
         setCategories([]);
       }
     };
-    
     fetchCategories();
     
     // Add scroll event listener for sticky navbar
