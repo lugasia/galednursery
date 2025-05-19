@@ -3,14 +3,12 @@ const router = express.Router();
 const { fetchDataFromGitHub, saveDataToGitHub } = require('../utils/githubData');
 const auth = require('./middleware/auth');
 
+console.log('[api/plants.js] Initializing simplified plants router...');
+
 // Get all plants
-router.get('/', async (req, res) => {
-  try {
-    const data = await fetchDataFromGitHub();
-    res.json(data.plants || []);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+router.get('/', (req, res) => {
+  console.log('[api/plants.js] GET / request received by simplified router');
+  res.json({ message: 'Simplified plants GET endpoint A-OK!' });
 });
 
 // Get plant by ID
@@ -116,5 +114,7 @@ router.delete('/:id', auth, async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+console.log('[api/plants.js] Simplified plants router created, typeof:', typeof router, 'has stack:', !!(router && router.stack));
 
 module.exports = router; 
