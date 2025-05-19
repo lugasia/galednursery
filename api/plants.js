@@ -6,9 +6,14 @@ const auth = require('./middleware/auth');
 console.log('[api/plants.js] Initializing simplified plants router...');
 
 // Get all plants
-router.get('/', (req, res) => {
-  console.log('[api/plants.js] GET / request received by simplified router');
-  res.json({ message: 'Simplified plants GET endpoint A-OK!' });
+router.get('/', async (req, res) => {
+  try {
+    const data = await fetchDataFromGitHub();
+    res.json(data.plants || []);
+  } catch (err) {
+    console.error('Error fetching plants:', err);
+    res.status(500).json({ message: err.message });
+  }
 });
 
 // Get plant by ID
