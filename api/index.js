@@ -3,11 +3,25 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
+
+// Load data.json
+const dataPath = path.join(__dirname, '..', 'data.json');
+let data = {};
+try {
+  const rawData = fs.readFileSync(dataPath, 'utf8');
+  data = JSON.parse(rawData);
+  console.log('Data loaded successfully');
+} catch (err) {
+  console.error('Error loading data.json:', err);
+}
 
 // Import routes
 const plantRoutes = require('./plants');
 const categoryRoutes = require('./categories');
 const updateDataRouter = require('./updateData');
+const authRoutes = require('./auth');
+const orderRoutes = require('./orders');
 
 // Create Express app
 const app = express();
@@ -22,6 +36,12 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Make data available to routes
+app.use((req, res, next) => {
+  req.data = data;
+  next();
+});
+
 // Root route
 app.get('/api', (req, res) => {
   res.json({ 
@@ -30,7 +50,8 @@ app.get('/api', (req, res) => {
     endpoints: {
       plants: '/api/plants',
       categories: '/api/categories',
-      auth: '/api/auth'
+      auth: '/api/auth',
+      orders: '/api/orders'
     }
   });
 });
@@ -38,6 +59,8 @@ app.get('/api', (req, res) => {
 // Routes
 app.use('/api/plants', plantRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/orders', orderRoutes);
 app.use('/api', updateDataRouter);
 
 // Error handling middleware
