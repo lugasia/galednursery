@@ -1,35 +1,33 @@
 const express = require('express');
 const router = express.Router();
+const { fetchDataFromGitHub, saveDataToGitHub } = require('../utils/githubData');
 
 // Get all orders
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const orders = req.data.orders || [];
-    res.json(orders);
+    const data = await fetchDataFromGitHub();
+    res.json(data.orders || []);
   } catch (err) {
-    console.error('Error fetching orders:', err);
-    res.status(500).json({ message: 'Failed to fetch orders' });
+    res.status(500).json({ message: err.message });
   }
 });
 
 // Create new order
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   try {
+    const data = await fetchDataFromGitHub();
     const newOrder = {
       id: Date.now().toString(),
       ...req.body,
       status: 'pending',
       createdAt: new Date().toISOString()
     };
-    
-    // Add to data
-    if (!req.data.orders) req.data.orders = [];
-    req.data.orders.push(newOrder);
-    
+    data.orders = data.orders || [];
+    data.orders.push(newOrder);
+    await saveDataToGitHub(data);
     res.status(201).json(newOrder);
   } catch (err) {
-    console.error('Error creating order:', err);
-    res.status(500).json({ message: 'Failed to create order' });
+    res.status(500).json({ message: err.message });
   }
 });
 

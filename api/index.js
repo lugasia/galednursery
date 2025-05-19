@@ -3,18 +3,6 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const fs = require('fs');
-
-// Load data.json
-const dataPath = path.join(__dirname, '..', 'data.json');
-let data = {};
-try {
-  const rawData = fs.readFileSync(dataPath, 'utf8');
-  data = JSON.parse(rawData);
-  console.log('Data loaded successfully');
-} catch (err) {
-  console.error('Error loading data.json:', err);
-}
 
 // Import routes
 const plantRoutes = require('./plants');
@@ -35,12 +23,6 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
-
-// Make data available to routes
-app.use((req, res, next) => {
-  req.data = data;
-  next();
-});
 
 // Root route
 app.get('/api', (req, res) => {

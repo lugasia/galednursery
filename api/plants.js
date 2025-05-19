@@ -1,30 +1,38 @@
 const express = require('express');
 const router = express.Router();
-const data = require('../data.json');
+const { fetchDataFromGitHub } = require('../utils/githubData');
 const auth = require('./middleware/auth');
 
 // Get all plants
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
+    const data = await fetchDataFromGitHub();
     res.json(data.plants || []);
   } catch (err) {
-    console.error('Error fetching plants:', err);
-    res.status(500).json({ message: 'Error fetching plants' });
+    res.status(500).json({ message: err.message });
   }
 });
 
 // Get plant by ID
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-    const plant = (data.plants || []).find(p => p._id == req.params.id);
-    if (plant) {
-      res.json(plant);
-    } else {
-      res.status(404).json({ message: 'Plant not found' });
-    }
+    const data = await fetchDataFromGitHub();
+    const plant = (data.plants || []).find(plant => plant.id == req.params.id);
+    if (!plant) return res.status(404).json({ message: 'Plant not found' });
+    res.json(plant);
   } catch (err) {
-    console.error('Error fetching plant:', err);
-    res.status(500).json({ message: 'Error fetching plant' });
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Get plants by category
+router.get('/category/:categoryId', async (req, res) => {
+  try {
+    const data = await fetchDataFromGitHub();
+    const plants = (data.plants || []).filter(plant => plant.category == req.params.categoryId);
+    res.json(plants);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 

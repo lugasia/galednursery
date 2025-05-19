@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const Category = require('./models/Category');
+const { fetchDataFromGitHub } = require('../utils/githubData');
 
 // GET all categories
 router.get('/', async (req, res) => {
   try {
-    const categories = await Category.find();
-    res.json(categories);
+    const data = await fetchDataFromGitHub();
+    res.json(data.categories || []);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -15,7 +15,8 @@ router.get('/', async (req, res) => {
 // GET category by ID
 router.get('/:id', async (req, res) => {
   try {
-    const category = await Category.findById(req.params.id);
+    const data = await fetchDataFromGitHub();
+    const category = (data.categories || []).find(cat => cat.id == req.params.id);
     if (!category) return res.status(404).json({ message: 'Category not found' });
     res.json(category);
   } catch (err) {
