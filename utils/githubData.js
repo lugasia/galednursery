@@ -1,10 +1,11 @@
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const REPO = 'lugasia/galednursery';
-const FILE_PATH = 'data.json';
-const BRANCH = 'main';
+const REPO = process.env.GITHUB_REPO || 'lugasia/galednursery';
+const FILE_PATH = process.env.GITHUB_FILE_PATH || 'data.json';
+const BRANCH = process.env.GITHUB_BRANCH || 'main';
 
 async function fetchDataFromGitHub() {
   const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${FILE_PATH}`;
+  console.log('Fetching from:', url);
   const response = await fetch(url);
   if (!response.ok) throw new Error('Failed to fetch data.json from GitHub');
   return await response.json();
